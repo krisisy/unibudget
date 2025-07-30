@@ -59,7 +59,7 @@ export default function Signup() {
             placeholder="Re-enter your password" 
             required />
           <br />
-          <button className="auth-button" type="submit"><Link href="/">Sign up</Link></button>
+          <button className="auth-button" type="submit"><Link href="/login">Sign up</Link></button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <span>Have an account? <Link href="/login" style={{color:'#43b58c', textDecoration: 'underline'}}>Log in</Link></span>
         </form>

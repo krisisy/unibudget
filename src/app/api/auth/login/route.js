@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { prisma } from '../../../../../lib/prisma'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -7,8 +7,12 @@ export async function POST(req) {
 
   const user = await prisma.user.findUnique({ where: { email } })
 
-  if (!user || user.password !== password) {
-    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+  if (!user) {
+    return NextResponse.json({ error: 'User does not exist' }, { status: 404 })
+  }
+
+  if (user.password !== password) {
+    return NextResponse.json({ error: 'Incorrect password' }, { status: 401 })
   }
 
   cookies().set('user', user.email, { httpOnly: true })
