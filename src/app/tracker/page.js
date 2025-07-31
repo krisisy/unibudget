@@ -1,6 +1,7 @@
 'use client';
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import styles from '../styles/Main.module.css';
 
 export default function Tracker() {
@@ -12,6 +13,13 @@ export default function Tracker() {
   const [linkedRows, setLinkedRows] = useState([
   { selectedCategory: '' }
   ]);
+  const router = useRouter();
+
+  // Log out functionality
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST'})
+    router.push('/login')
+  }
 
   // Setting up the date
   const calculateDaysRemaining = (dateString) => {
@@ -133,7 +141,7 @@ export default function Tracker() {
             <div className={styles.userProfile}>
               <img src="https://avatar.iran.liara.run/public" alt="User" avatar="true" />
               {/* <Image className={styles.avatar} width={`40`} height={`40`} src="https://avatar.iran.liara.run/public" alt="User" avatar/> */}
-              <button>▼</button>
+              <button onClick={handleLogout}>Log out</button>
             </div>
           </div>
 
