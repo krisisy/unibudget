@@ -79,9 +79,30 @@
   border-collapse: collapse;
 }
 
+.categoryTable thead {
+  background-color: #383F51;
+  color: white;
+}
+
 .categoryTable td {
   border: 1px solid #ccc;
   padding: 0.5rem;
+}
+
+.categoryTable input {
+  outline: none;
+}
+
+.addCatBtn {
+  background-color: #43b58c;
+  margin: .5rem auto;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  color: black;
+  font-weight: bold;
+  width: 100%;
+  display: block;
 }
 
 .userHeader {
@@ -104,6 +125,14 @@
   width: 40px;
   height: 40px;
   border-radius: 9999px;
+}
+
+.logoutBtn {
+  background-color: red;
+  margin: 0 1rem;
+  padding: .5rem;
+  border-radius: .3rem;
+  font-weight: 600;
 }
 
 .savingButtons {
@@ -151,6 +180,7 @@
 
 .breakdownTable tr {
   text-align: center;
+  border-radius: .5rem;
 }
 
 .descTable {
@@ -161,15 +191,17 @@
   max-width: 150px;
 }
 
-.breakdownTable th {
+.breakdownTable th,
+.categoryTable th {
   background-color: #2f3542;
   color: white;
   padding: 0.5rem;
 }
 
 .breakdownTable td {
-  background-color: white;
+  background-color: #F1EBE5;
   padding: 0.5rem;
+  border-top: 3px solid #2f354281;
 }
 
 .textGray, .budgetBox label {
@@ -195,7 +227,8 @@
 }
 
 .entryForm input,
-.entryForm button {
+.entryForm button,
+.catSelect {
   padding: 0.5rem 1rem;
   font-size: 1rem;
 }
@@ -212,11 +245,22 @@
   border-radius: 9999px;
   font-size: 1.125rem;
   color: black;
-  font-weight: 500;
+  font-weight: bold;
   cursor: pointer;
 }
 
 .entryBtn:hover {
   background-color: #F1EBE5;
   transition: .3s;
+}
+
+.catSelect {
+  background-color: white;
+  outline: none;
+  border: none;
+  border-radius: .3rem;
+}
+
+.catOptions {
+  color: black;
 }
