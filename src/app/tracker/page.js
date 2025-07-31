@@ -5,22 +5,24 @@ import { useRouter } from "next/navigation";
 import styles from '../styles/Main.module.css';
 
 export default function Tracker() {
+  const [savings, setSavings] = useState('');
   const [targetDate, setTargetDate] = useState('');
   const [daysRemaining, setDaysRemaining] = useState(null);
-  const router = useRouter();
-    const [categories, setCategories] = useState([
+  const [history, setHistory] = useState([]);
+  const [entries, setEntries] = useState([]);
+  const [categories, setCategories] = useState([
     { category: 'Food', amount: 0 },
   ]);
-
-  const [entries, setEntries] = useState([]);
-
   const [formData, setFormData] = useState({
     description: '',
     date: '',
     amount: '',
     category: '',
   });
+  const router = useRouter()
+  
 
+  ;
   // Update categories table
   const handleCategoryChange = (index, field, value) => {
     const updated = [...categories];
@@ -56,28 +58,32 @@ export default function Tracker() {
     router.push('/login')
   }
 
-  // Setting up the date
-  const calculateDaysRemaining = (dateString) => {
-    const today = new Date();
-    const selectedDate = new Date(dateString);
-    
-    today.setHours(0, 0, 0, 0);
-    selectedDate.setHours(0, 0, 0, 0);
-
-    const diffInTime = selectedDate - today;
-
-    const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
-    return diffInDays;
-  };
-
   useEffect(() => {
-    if (targetDate) {
-      const days = calculateDaysRemaining(targetDate);
-      setDaysRemaining(days);
+    if (!targetDate) return;
+
+    const today = new Date();
+    const target = new Date(targetDate);
+    today.setHours(0, 0, 0, 0);
+    target.setHours(0, 0, 0, 0);
+
+    const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+    setDaysRemaining(diff);
+
+    if (diff < 0 && savings > 0) {
+      // Save to history
+      const monthKey = today.toLocaleString('default', { month: 'short', year: 'numeric' });
+
+      const updatedHistory = [
+        { month: monthKey, amount: savings },
+        ...history,
+      ];
+      const trimmedHistory = updatedHistory.slice(0, 6);
+      setHistory(trimmedHistory);
+
+      // Reset savings
+      setSavings('');
     }
   }, [targetDate]);
-
-  // Handling category change
 
   return (
     <div className={styles.budgetPage}>
@@ -88,7 +94,13 @@ export default function Tracker() {
           <div className={styles.budgetBox}>
 
             <h3 className={styles.budgetTitle}>Monthly Budget:</h3>
-            <input type="number" placeholder="0000" min="0" id="1" className={styles.budgetAmount}></input> <br />
+            <input type="number" 
+              className={styles.budgetAmount}
+              value={savings}
+              onChange={(e) => setSavings(Number(e.target.value))}
+              placeholder="0000" 
+              min="0" 
+              id="1" /> <br />
             
             <label htmlFor="dateInput">End date:</label>
 
@@ -103,8 +115,8 @@ export default function Tracker() {
             <div className={styles.budgetDays}> 
 
               {/* Setting remaining days */}
-              {daysRemaining !== null && (
-                <p style={{ marginTop: '15px' }}>
+              {targetDate && (
+                <p>
                   {daysRemaining > 1
                     ? `${daysRemaining} days remaining`
                     : daysRemaining === 1
@@ -164,80 +176,102 @@ export default function Tracker() {
             <button className={styles.logoutBtn} onClick={handleLogout}>Log out</button>
             
           </div>
-
-          <div className={styles.savingButtons}>
-            <button className={styles.primaryButton}>Save for a car</button>
-            <button className={styles.secondaryButton}>+ Add another saving...</button>
-          </div>
-
+        
+          <div className={styles.rightMost}>
           {/* Entries table */}
-          <div className={styles.entries}>
-            <div className={styles.tableCont}>
-            <table className={styles.breakdownTable}>
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map((entry, index) => (
-            <tr key={index}>
-              <td className={styles.descTable}>{entry.description}</td>
-              <td>{entry.category}</td>
-              <td>{entry.amount}</td>
-              <td>{entry.date}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-                
-          </div>
-
-
-            <div className={styles.addEntry}>
-              <h2>Add an Entry</h2>
-              <form className={styles.entryForm} onSubmit={handleSubmit}>
-                <input
-                  type="text"
-                  name="description"
-                  placeholder="Description"
-                  value={formData.description}
-                  onChange={handleFormChange}
-                />
-                <select
-                  className={styles.catSelect}
-                  name="category"
-                  value={formData.category}
-                  onChange={handleFormChange}
-                >
-                  <option value="" className={styles.catOptions}>Select Category</option>
-                  {categories
-                    .filter((cat) => cat.category.trim() !== '')
-                    .map((cat, i) => (
-                      <option className={styles.catOptions} key={i} value={cat.category}>
-                        {cat.category}
-                      </option>
+            <div className={styles.entries}>
+              <div className={styles.tableCont}>
+                <table className={styles.breakdownTable}>
+                  <thead>
+                    <tr>
+                      <th>Description</th>
+                      <th>Category</th>
+                      <th>Amount</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {entries.map((entry, index) => (
+                      <tr key={index}>
+                        <td className={styles.descTable}>{entry.description}</td>
+                        <td>{entry.category}</td>
+                        <td>{entry.amount}</td>
+                        <td>{entry.date}</td>
+                      </tr>
                     ))}
-                </select>
-                <input
-                  type="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleFormChange}
-                />
-                <input
-                  type="number"
-                  name="amount"
-                  placeholder="Amount"
-                  value={formData.amount}
-                  onChange={handleFormChange}
-                />
-                <button type="submit" className={styles.entryBtn}>+ Add Entry</button>
-              </form>
-              
+                  </tbody>
+                </table>
+
+              </div>
+              <div className={styles.rightMost}>
+                <div className={styles.addEntry}>
+                  <h2>Add an Entry</h2>
+                  <form className={styles.entryForm} onSubmit={handleSubmit}>
+                    <input
+                      type="text"
+                      name="description"
+                      placeholder="Description"
+                      value={formData.description}
+                      onChange={handleFormChange}
+                    />
+                    <select
+                      className={styles.catSelect}
+                      name="category"
+                      value={formData.category}
+                      onChange={handleFormChange}
+                    >
+                      <option value="" className={styles.catOptions}>Select Category</option>
+                      {categories
+                        .filter((cat) => cat.category.trim() !== '')
+                        .map((cat, i) => (
+                          <option className={styles.catOptions} key={i} value={cat.category}>
+                            {cat.category}
+                          </option>
+                        ))}
+                    </select>
+                    <input
+                      type="date"
+                      name="date"
+                      value={formData.date}
+                      onChange={handleFormChange}
+                    />
+                    <input
+                      type="number"
+                      name="amount"
+                      placeholder="Amount"
+                      value={formData.amount}
+                      onChange={handleFormChange}
+                    />
+                    <button type="submit" className={styles.entryBtn}>+ Add Entry</button>
+                  </form>
+                  
+                </div>
+
+                {/* History */}
+                <div className={styles.historyCont}>
+                  <h2>History</h2>
+                  {history.length === 0 ? (
+                  <p>No savings history yet.</p>
+                ) : (
+                  <table className={styles.categoryTable}>
+                    <thead>
+                      <tr>
+                        <th>Month</th>
+                        <th>Saved Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {history.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item.month}</td>
+                          <td>{item.amount.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
