@@ -34,6 +34,7 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <input type="email" onChange={handleChange} placeholder="Enter your email" className="auth-input" required />
           <input type="password" onChange={handleChange} placeholder="Enter your password" className="auth-input" required />
+          <br />
           <button type="submit" className="auth-button">
             <Link href="/tracker">Login</Link>
           </button>

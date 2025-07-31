@@ -14,18 +14,19 @@ export default function Signup() {
     e.preventDefault()
     if (form.password !== form.confirm) return setError("Passwords don't match")
 
-    const res = await fetch('/api/auth/signup', {
+    const res = await fetch('/api/auth/signup/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
 
-    if (res.ok) router.push('/')
+    if (res.ok) router.push('/login')
     else {
       const data = await res.json()
       setError(data.error)
     }
   }
+
   return (
     <div className="auth-page">
       <div className="auth-box">
@@ -58,8 +59,8 @@ export default function Signup() {
             type="password" 
             placeholder="Re-enter your password" 
             required />
-          <br />
-          <button className="auth-button" type="submit"><Link href="/login">Sign up</Link></button>
+          <br /><Link href="/login">
+          <button className="auth-button" type="submit">Sign up</button></Link>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <span>Have an account? <Link href="/login" style={{color:'#43b58c', textDecoration: 'underline'}}>Log in</Link></span>
         </form>
