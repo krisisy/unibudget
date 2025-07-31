@@ -30,3 +30,33 @@ export async function POST(req) {
     )
   }
 }
+
+// export default async function handler(req, res) {
+//   try {
+//     if (req.method !== 'POST') {
+//       return res.status(405).json({ message: 'Method not allowed' });
+//     }
+
+//     const { name, email, password } = req.body;
+
+//     if (!name || !email || !password) {
+//       return NextResponse.json({error: "Missing fields."}, { status: 400})
+//     }
+
+//     const existing = await prisma.user.findUnique({ where: { email } })
+//       if (existing) {
+//       console.log('User already exists: ', { name, email})
+//       return NextResponse.json({ error: 'Email is already in use' }, { status: 400 })
+//     }
+
+//     const user = await prisma.user.create({
+//       data: { name, email, password },
+//     });
+//     console.log("User succesfully created");
+
+//     return res.status(201).json(user);
+//   } catch (error) {
+//     console.error('Signup error:', error);
+//     return res.status(500).json({ message: 'Signup failed' });
+//   }
+// }
