@@ -13,6 +13,13 @@ export default function Tracker() {
   const [linkedRows, setLinkedRows] = useState([
   { selectedCategory: '' }
   ]);
+  const [tableData, setTableData] = useState([]);
+  const [formData, setFormData] = useState({
+    category: '',
+    description: '',
+    entryDate: '',
+    amount: '',
+  });
   const router = useRouter();
 
   // Log out functionality
@@ -53,24 +60,43 @@ export default function Tracker() {
     setRows([...rows, { category: '', amount: 0}]);
   };
 
-  const addLinkedRow = () => {
-    setLinkedRows([...linkedRows, { selectedCategory: ''}]);
+  // const addLinkedRow = () => {
+  //   setLinkedRows([...linkedRows, { selectedCategory: ''}]);
+  // };
+
+  // const handleLinkedChange = (index, value) => {
+  //   const updated = [...linkedRows];
+  //   updated[index].selectedCategory = value;
+  //   setLinkedRows(updated);
+  // };
+
+
+  // const getCategories = () => {
+  //   return rows
+  //     .filter((row) => row.category.trim !== '')
+  //     .map((row, i) => (
+  //       <option key={i} value={row.category}>
+  //         {row.category}
+  //       </option>
+  //     ));
+  // };
+
+  // adding form data to table
+
+  const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLinkedChange = (index, value) => {
-    const updated = [...linkedRows];
-    updated[index].selectedCategory = value;
-    setLinkedRows(updated);
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.description || !formData.date || !formData.amount || !formData.category) {
+      alert('Please fill out all fields');
+      return;
+    }
 
-  const getCategories = () => {
-    return rows
-      .filter((row) => row.category.trim !== '')
-      .map((row, i) => (
-        <option key={i} value={row.category}>
-          {row.category}
-        </option>
-      ));
+    setTableData([...tableData, formData]);
+    setFormData({ category: '', description: '', entryDate: '', amount: '' });
   };
 
   return (
@@ -81,7 +107,7 @@ export default function Tracker() {
         <div className={styles.budgetLeft}>
           <div className={styles.budgetBox}>
 
-            <span className={styles.budgetTitle}>Monthly Budget:</span>
+            <h3 className={styles.budgetTitle}>Monthly Budget:</h3>
             <input type="number" placeholder="0000" min="0" id="1" className={styles.budgetAmount}></input> <br />
             
             <label htmlFor="dateInput">End date:</label>
@@ -137,7 +163,7 @@ export default function Tracker() {
         {/* Right Panel */}
         <div className={styles.budgetRight}>
           <div className={styles.userHeader}>
-            <h2>Welcome, John!</h2>
+            <h2>Start Tracking!</h2>
             <div className={styles.userProfile}>
               <img src="https://avatar.iran.liara.run/public" alt="User" avatar="true" />
               {/* <Image className={styles.avatar} width={`40`} height={`40`} src="https://avatar.iran.liara.run/public" alt="User" avatar/> */}
@@ -149,53 +175,87 @@ export default function Tracker() {
             <button className={styles.primaryButton}>Save for a car</button>
             <button className={styles.secondaryButton}>+ Add another saving...</button>
           </div>
-          
+
+          {/* Entries table */}
           <div className={styles.entries}>
             <div className={styles.tableCont}>
-              <table className={styles.breakdownTable}>
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th>Amount</th>
+            <table className={styles.breakdownTable}>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              
+              <tbody>
+                {/* <tr>
+                  <td className={styles.descTable}>What if!!!!!</td>
+                  <td>Test</td>
+                  <td>7/20/25</td>
+                  <td>100</td>
+                </tr> */}
+                {tableData.map((entry, index) => (
+                  <tr key={index}>
+                    <td>{entry.description}</td>
+                    <td>{entry.category}</td>
+                    <td>{entry.entryDate}</td>
+                    <td>{entry.amount}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className={styles.descTable}>What if!!!!!</td>
-                    {linkedRows.map((row, index) =>(
-                      <td key={`linked-${index}`}>
-                        <select
-                          value={row.selectedCategory}
-                          onChange={(e) => handleLinkedChange(index, e.target.value)}>
-                          {getCategories()}
-                        </select>
-                      </td>
-                    ))}
-                    <td>7/20/25</td>
-                    <td>100</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+
+            </table>
+                
+          </div>
+
+
             <div className={styles.addEntry}>
               <h2>Add an Entry</h2>
               {linkedRows.map((row, index) =>(
-                <form className={styles.entryForm} key={`linked-${index}`}>
-                <select
-                  value={row.selectedCategory}
-                  onChange={(e) => handleLinkedChange(index, e.target.value)}>
-                <option value="">--Select a Category--</option>
-                {getCategories()}
-                </select>
-                <input type="text" placeholder="Write a description" maxLength="50"/>
-                <input type="date" placeholder="Date" required/>
-                <input type="number" placeholder="Amount" required/>
-                
-                <button className={styles.entryBtn}>Add Entry</button>
-                
-              </form>
+                <form className={styles.entryForm} key={`linked-${index}`} onSubmit={handleSubmit}>
+
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}>
+
+                  <option value="">--Select a Category--</option>
+                  
+                  {rows
+                    .filter((cat) => cat.category.trim() !== '')
+                    .map((cat, i) => (
+                      <option key={i} value={cat.category}>
+                        {cat.category}
+                      </option>
+                    ))}
+                  </select>
+
+                  <input type="text" 
+                    value={formData.description}
+                    onChange={handleChange}
+                    name="description" 
+                    placeholder="Write a description" 
+                    maxLength="50"/>
+
+                  <input type="date" 
+                    value={formData.entryDate}
+                    onChange={handleChange}
+                    name="entryDate" 
+                    placeholder="Date" 
+                    required/>
+
+                  <input type="number" 
+                    value={formData.amount}
+                    onChange={handleChange}
+                    name="amount" 
+                    placeholder="Amount" 
+                    required/>
+
+                  <button className={styles.entryBtn} type="submit">Add Entry</button>
+                  
+                </form>
               ))}
               
             </div>

@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from '../styles/Forms.module.css';
 
 export default function Login() {
   const router = useRouter()
@@ -28,31 +29,21 @@ export default function Login() {
 
   return (
 
-    <div className="auth-page">
-      <div className="auth-box">
+    <div className={styles.authPage}>
+      <div className={styles.authBox}>
         <h2>LOG IN AND START TRACKING!</h2>
         <form onSubmit={handleSubmit}>
-          <input type="email" onChange={handleChange} placeholder="Enter your email" className="auth-input" required />
-          <input type="password" onChange={handleChange} placeholder="Enter your password" className="auth-input" required />
+          <input type="email" onChange={handleChange} placeholder="Enter your email" className={styles.authInput} required />
+          <input type="password" onChange={handleChange} placeholder="Enter your password" className={styles.authInput} required />
           <br />
-          <button type="submit" className="auth-button">
-            <Link href="/tracker">Login</Link>
-          </button>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          
+          {error && <p style={{ color: '#ff9cacff', textDecoration: 'underline'}}>{error}</p>}
+          <button type="submit" className={styles.authButton}>Login</button>
+
         </form>
-        <button className="auth-alt-button">
-            <Link href="/signup">Sign up</Link>
-          </button>
+        <button className={styles.authAltButton}>
+          <Link href="/signup">Sign up</Link>
+        </button>
       </div>
     </div>
-
-    // <form onSubmit={handleSubmit}>
-    //   <h2>Login</h2>
-    //   <input name="email" onChange={handleChange} placeholder="Email" required />
-    //   <input name="password" type="password" onChange={handleChange} placeholder="Password" required />
-    //   <button type="submit">Login</button>
-    //   {error && <p style={{ color: 'red' }}>{error}</p>}
-    // </form>
   )
 }
