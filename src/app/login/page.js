@@ -40,9 +40,9 @@ export default function Login() {
           <button type="submit" className={styles.authButton}>Login</button>
 
         </form>
-        <button className={styles.authAltButton}>
-          <Link href="/signup">Sign up</Link>
-        </button>
+        <Link href="/signup"><button className={styles.authAltButton}>
+          Sign up
+        </button></Link>
       </div>
     </div>
   )

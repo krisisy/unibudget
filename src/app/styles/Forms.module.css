@@ -50,6 +50,7 @@
 
 .authAltButton {
   background-color: white;
+  width: 100%;
   padding: 0.75rem;
   border-radius: 9999px;
   font-size: 1.125rem;

@@ -36,7 +36,7 @@ export default function Signup() {
     <div className={styles.authPage}>
       <div className={styles.authBox}>
         <h2>SIGN UP!</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="on">
           <input className={styles.authInput}
             name="name"
             value={form.name}
