@@ -22,10 +22,10 @@ export default function Signup() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-
+      const data = await res.json();
       if (res.ok) router.push('/login')
       else {
-        const data = await res.json();
+        
         setError(data.error);
       };
     };

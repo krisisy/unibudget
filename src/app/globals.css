@@ -46,6 +46,7 @@ h2 {
 
 .container {
   background-color: #f4f0ea;
+  margin: 0 auto;
   min-height: 100vh;
   display: flex;
   align-items: center;

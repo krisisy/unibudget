@@ -7,8 +7,8 @@ export default function Home() {
       <div className="container">
         <div className="inner-cont">
           <h2>Welcome to UniBudget!</h2>
-          <button><Link href="/login">Log in</Link></button>
-          <button><Link href="/signup">Sign up</Link></button>
+          <Link href="/login"><button>Log in</button></Link>
+          <Link href="/signup"><button>Sign up</button></Link>
         </div>
       </div>
     </>

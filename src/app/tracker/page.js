@@ -115,7 +115,6 @@ export default function Tracker() {
               placeholder="0000" 
               min="0" 
               id="1" /> <br />
-            <p><strong>Remaining Savings: </strong>{savings.toLocaleString()}</p>
             
             <label htmlFor="dateInput">End date:</label>
 
