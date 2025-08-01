@@ -2,6 +2,7 @@ import { prisma } from '../../../../../lib/prisma'
 import { NextResponse } from 'next/server'
 
 export async function POST(req) {
+  console.log('Received request');
   try {
     const { name, email, password } = await req.json()
     console.log('Received signup data', { name, email, password})

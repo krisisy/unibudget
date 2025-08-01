@@ -12,12 +12,12 @@ export default function Signup() {
   const isFormValid = Object.values(form).every((value) => value.trim() !== "");
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (isFormValid){
       if (form.password !== form.confirm) return setError("Passwords don't match");
 
-      const res = await fetch('/api/auth/signup/', {
+      const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -68,10 +68,9 @@ export default function Signup() {
             type="password" 
             placeholder="Re-enter your password" 
             required />
-          <br /><Link href="/login">
           <button className={styles.authButton} type="submit" disabled={!isFormValid}>
             {isFormValid ? 'Sign up' : 'Please fill out all fields'}
-          </button></Link>
+          </button>
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <span>Have an account? <Link href="/login" style={{color:'#43b58c', textDecoration: 'underline'}}>Log in</Link></span>
         </form>
