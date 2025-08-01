@@ -24,7 +24,7 @@ input[type="number"] {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #F1EBE5;
+    --background: #f4f0ea;
     --foreground: #050404;
   }
 }
@@ -66,5 +66,12 @@ h2 {
 
 .inner-cont button {
   background-color: #43b58c;
-  display: flex;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  color: black;
+  font-weight: 500;
+  cursor: pointer;
+  margin: .5rem 0;
 }

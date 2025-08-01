@@ -11,7 +11,7 @@ export default function Tracker() {
   const [history, setHistory] = useState([]);
   const [entries, setEntries] = useState([]);
   const [categories, setCategories] = useState([
-    { category: 'Food', amount: 0 },
+    { category: 'Education', amount: 0 },
   ]);
   const [formData, setFormData] = useState({
     description: '',
@@ -19,14 +19,12 @@ export default function Tracker() {
     amount: '',
     category: '',
   });
-  const router = useRouter()
+  const router = useRouter();
   
-
-  ;
   // Update categories table
   const handleCategoryChange = (index, field, value) => {
     const updated = [...categories];
-    updated[index][field] = value;
+    updated[index][field] = field === 'amount' ? Number(value) : value;
     setCategories(updated);
   };
 
@@ -43,12 +41,28 @@ export default function Tracker() {
   // Submit form and add to entries
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.description || !formData.date || !formData.amount || !formData.category) {
+    const { description, date, category, amount, } = formData;
+    const amountNum = Number(amount);
+
+    if (!formData.description || !formData.date || !formData.amount || formData.amount <= 0 || !formData.category) {
       alert('Please fill out all fields');
       return;
     }
+    const updatedCategories = [...categories];
+    const categoryIndex = categories.findIndex((cat) => cat.category === category);
+    const cat = updatedCategories[categoryIndex];
+    // if (categoryIndex === -1) return alert('Invalid category');
 
-    setEntries([...entries, formData]);
+    if (amountNum > savings) return alert('Not enough savings');
+    if (amountNum > cat.amount) return alert('Not enough budget in selected category');
+    
+    updatedCategories[categoryIndex].amount -= amountNum;
+
+    setSavings((prev) => prev - amountNum);
+    setCategories(updatedCategories);
+
+    const newEntry = { category, amount: amountNum, description, date };
+    setEntries([newEntry, ...entries]);
     setFormData({ description: '', date: '', amount: '', category: '' });
   };
 
@@ -101,6 +115,7 @@ export default function Tracker() {
               placeholder="0000" 
               min="0" 
               id="1" /> <br />
+            <p><strong>Remaining Savings: </strong>{savings.toLocaleString()}</p>
             
             <label htmlFor="dateInput">End date:</label>
 
@@ -195,7 +210,7 @@ export default function Tracker() {
                       <tr key={index}>
                         <td className={styles.descTable}>{entry.description}</td>
                         <td>{entry.category}</td>
-                        <td>{entry.amount}</td>
+                        <td>{entry.amount.toLocaleString()}</td>
                         <td>{entry.date}</td>
                       </tr>
                     ))}
@@ -206,6 +221,8 @@ export default function Tracker() {
               <div className={styles.rightMost}>
                 <div className={styles.addEntry}>
                   <h2>Add an Entry</h2>
+
+                  {/* Entries form */}
                   <form className={styles.entryForm} onSubmit={handleSubmit}>
                     <input
                       type="text"
