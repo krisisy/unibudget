@@ -20,7 +20,8 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
     }
 
-    cookies().set('user', user.email, { httpOnly: true });
+    const cookieStore = await cookies();
+    cookieStore.set('user', user.email, { httpOnly: true });
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Login error:', error);
