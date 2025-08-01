@@ -15,22 +15,22 @@ export default function Signup() {
   const handleSubmit = async e => {
     e.preventDefault()
     if (isFormValid){
-      if (form.password !== form.confirm) return setError("Passwords don't match")
+      if (form.password !== form.confirm) return setError("Passwords don't match");
 
       const res = await fetch('/api/auth/signup/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
-      })
+      });
 
       if (res.ok) router.push('/login')
       else {
-        const data = await res.json()
-        setError(data.error)
-      }
-    }
+        const data = await res.json();
+        setError(data.error);
+      };
+    };
     
-  }
+  };
 
   return (
     <div className={styles.authPage}>
