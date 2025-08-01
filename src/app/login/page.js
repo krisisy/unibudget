@@ -11,19 +11,19 @@ export default function Login() {
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
-    })
-
+    });
+    const data = await res.json();
     if (res.ok) router.push('/tracker')
     else {
-      const data = await res.json()
-      setError(data.error)
+      
+      setError(data.error);
     }
   }
 
@@ -33,8 +33,8 @@ export default function Login() {
       <div className={styles.authBox}>
         <h2>LOG IN AND START TRACKING!</h2>
         <form onSubmit={handleSubmit}>
-          <input type="email" onChange={handleChange} placeholder="Enter your email" className={styles.authInput} required />
-          <input type="password" onChange={handleChange} placeholder="Enter your password" className={styles.authInput} required />
+          <input type="email" name="email" onChange={handleChange} placeholder="Enter your email" className={styles.authInput} required />
+          <input type="password" name="password" onChange={handleChange} placeholder="Enter your password" className={styles.authInput} required />
           <br />
           {error && <p style={{ color: '#ff9cacff', textDecoration: 'underline'}}>{error}</p>}
           <button type="submit" className={styles.authButton}>Login</button>

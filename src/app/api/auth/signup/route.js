@@ -1,11 +1,13 @@
 import { prisma } from '../../../../../lib/prisma'
+import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server'
+import bcrypt from 'bcrypt';
 
 export async function POST(req) {
-  console.log('Received request');
+  const prisma = new PrismaClient();
+
   try {
     const { name, email, password } = await req.json()
-    console.log('Received signup data', { name, email, password})
 
     if (!name || !email || !password) {
       return NextResponse.json({error: "Missing fields."}, { status: 400})
@@ -17,6 +19,14 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Email is already in use' }, { status: 400 })
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await prisma.user.create({
+      data: {
+      name,
+      email,
+      password: hashedPassword,
+      },
+    });
     const user = await prisma.user.create({
       data: { name, email, password }
     })
@@ -28,36 +38,6 @@ export async function POST(req) {
     return NextResponse.json(
       { error: 'Internal server error', details: error.messsage },
       { status: 500}
-    )
+    );
   }
 }
-
-// export default async function handler(req, res) {
-//   try {
-//     if (req.method !== 'POST') {
-//       return res.status(405).json({ message: 'Method not allowed' });
-//     }
-
-//     const { name, email, password } = req.body;
-
-//     if (!name || !email || !password) {
-//       return NextResponse.json({error: "Missing fields."}, { status: 400})
-//     }
-
-//     const existing = await prisma.user.findUnique({ where: { email } })
-//       if (existing) {
-//       console.log('User already exists: ', { name, email})
-//       return NextResponse.json({ error: 'Email is already in use' }, { status: 400 })
-//     }
-
-//     const user = await prisma.user.create({
-//       data: { name, email, password },
-//     });
-//     console.log("User succesfully created");
-
-//     return res.status(201).json(user);
-//   } catch (error) {
-//     console.error('Signup error:', error);
-//     return res.status(500).json({ message: 'Signup failed' });
-//   }
-// }
